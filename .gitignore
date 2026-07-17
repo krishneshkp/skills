@@ -7,3 +7,6 @@ a11y-report.json
 perf-report.json
 
 .DS_Store
+
+# internal only, not published
+TESTING.md
