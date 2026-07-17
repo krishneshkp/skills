@@ -1,0 +1,9 @@
+node_modules/
+package-lock.json
+
+# script output artifacts (written to the directory the agent runs from)
+crawl-report.json
+a11y-report.json
+perf-report.json
+
+.DS_Store

@@ -1,0 +1,17 @@
+{
+  "name": "krishnesh-skills",
+  "description": "Agent skills for marketing-site engineers — technical QA encoded from 100+ real agency launches.",
+  "owner": {
+    "name": "Krishnesh",
+    "url": "https://krishnesh.com"
+  },
+  "plugins": [
+    {
+      "name": "review-site",
+      "source": "./",
+      "description": "Technical QA review of marketing websites against an agency launch bar. Auto-detects Webflow / Astro / Next.js and staging vs production, then reviews indexability, metadata, structured data, accessibility, performance, semantics, forms, and security.",
+      "strict": false,
+      "skills": ["./skills/review-site"]
+    }
+  ]
+}
