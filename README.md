@@ -59,6 +59,10 @@ node skills/review-site/scripts/crawl.js --pages https://acme.com/pricing https:
 
 Coverage is honest by design: **every** in-scope URL is status- and meta-checked (cheap, exhaustive), while the expensive browser and judgment layer is sampled one representative per template. Every report states exactly what was checked in full versus sampled. Flags for any scope: `--concurrency 5` (polite parallelism) and `--max-pages 30` (deep-analysis cap; never caps status-checking).
 
+## Security
+
+This skill reads untrusted web content by design: that is what a site review is. Everything fetched from a reviewed site is treated strictly as data to analyze, never as instructions. Content that tries to steer the agent is ignored and reported as a security finding.
+
 ## License
 
 MIT
