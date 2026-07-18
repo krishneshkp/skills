@@ -32,6 +32,11 @@ function detectPlatform(html) {
     } else if (/astro-island|data-astro-/i.test(html)) {
       platform = "astro";
       signals.push("astro-* attributes / islands");
+    } else if (/\/_astro\//.test(html)) {
+      // Astro's hashed build-asset dir (analog of Next's /_next/). Catches fully
+      // static Astro sites that omit the opt-in generator meta and have no islands.
+      platform = "astro";
+      signals.push("/_astro/ asset paths");
     }
   }
 

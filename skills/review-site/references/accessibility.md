@@ -4,7 +4,7 @@ Target: WCAG 2.1 AA on marketing-critical flows. Run the axe pass first (scripts
 
 ## Checks — automated base
 
-- **[HIGH]** Full axe-core pass per sampled page; report `critical` and `serious` violations individually, summarize `moderate`/`minor`. [S]
+- **[HIGH]** Full axe-core pass per sampled page; report `critical` and `serious` violations individually, summarize `moderate`/`minor`. [S] Translate every axe violation into plain user impact before it enters the findings table: say what fails for which users (screen readers, keyboard users, low-vision users), keep the axe id + impact in parentheses as evidence, and make the fix platform-appropriate (e.g. an orphaned `<li>` on Webflow: use the native List element or fix the embed markup — Webflow's CMS Collection Lists with `role="list"` divs are already valid and never flagged).
 - **[HIGH]** Colour contrast WCAG AA (covered by axe; spot-check brand-colored buttons and text-on-image heroes manually). [S+J]
 
 ## Checks — structure

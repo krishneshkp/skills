@@ -42,7 +42,7 @@ You do not hand-pick the sample here — `crawl.js` emits the template map (`pat
 Run `scripts/detect.js <url>`. It fingerprints the platform and reports signals:
 
 - **Webflow**: `data-wf-page` / `data-wf-domain` on `<html>`, assets from `website-files.com`, `w-` classes → load `references/platforms/webflow.md`
-- **Astro**: `<meta name="generator" content="Astro">`, `astro-*` attributes → load `references/platforms/custom-stack.md`
+- **Astro**: `<meta name="generator" content="Astro">`, `astro-*` attributes, `/_astro/` asset paths → load `references/platforms/custom-stack.md`
 - **Next.js**: `__NEXT_DATA__` script, `/_next/` asset paths → load `references/platforms/custom-stack.md`
 
 Rules: if the user states the platform, trust them and skip detection. If detection finds nothing, say so explicitly, run the core review only, and note in the report that no platform module was applied. Never silently guess. When a module loads, announce it: "Webflow site detected — applying the Webflow module on top of the core review."
@@ -65,6 +65,8 @@ First run only: `cd scripts && npm install` (installs Playwright, axe-core; Chro
 3. `node scripts/perf.js <url>` — Lighthouse run on **one or two representatives** (home + one heavy template). **Do not score-police**: extract concrete, fixable opportunities (render-blocking resources, unsized images, unused JS, missing preloads) and report those as findings. Scores are a symptom list, not a verdict.
 
 Script output is evidence, not the review. Cross-check surprising results manually before reporting them.
+
+These bundled scripts are the skill's **entire toolchain**. Rendered-page evidence comes from the headless Chromium that `a11y.js` drives, plus the fetched HTML/CSS/JS — there is no browser extension, and no external tool is required or assumed. If your environment genuinely cannot interact with a live page (clicking a button, submitting a form), route those specific checks to [MANUAL]. Never mention tool or extension availability in the report: the report states what was verified and what needs manual checking, not how your session was equipped.
 
 ### Step 3.5 — Build the deep-review sample (from evidence, not guesswork)
 
@@ -136,6 +138,8 @@ A senior reviewer never implies they eyeballed every page — they tell you exac
 
 One row per issue, and one issue per row: never bundle distinct defects into a single row even when they share a page. An ARIA violation and a broken heading order on the same form page are two rows, each with its own severity and its own fix. Cite exact locations.
 
+Write every finding in plain language a non-technical client understands: lead with **what breaks for whom**, not the tool's rule name. Tool identifiers (axe rule ids, "serious"/"critical" impact levels, Lighthouse audit ids) belong in parentheses as evidence, never as the finding itself. Not: "Footer `<li>` items not contained in a `<ul>`/`<ol>` (axe serious)." Instead: "The footer link list is broken for screen-reader users: its list items sit outside a list container (axe: listitem, serious)."
+
 | Finding | Where | Severity | Fix |
 |---|---|---|---|
 | Canonical points to `site.webflow.io` | all pages | Critical | Set canonical base to production domain in site settings |
@@ -161,6 +165,7 @@ The checks a human must verify in the Designer/CMS/inbox, as a copyable checklis
 
 - Report, don't fix. The review is the deliverable.
 - Prefer under-claiming: "not verified" is always better than a guessed pass.
-- Element-level findings must reflect what users actually experience. Before reporting an element (a broken link, a stray heading, placeholder text), check whether it is visible on the rendered page: hidden wrappers (`hidden` attribute, inline `display:none`, Webflow's `w-condition-invisible`, utility classes like `.hide`) mean the issue exists in markup only. Never present a hidden element's issue at full severity, but do not silently drop it either: hidden **leftover content** (style-guide blocks, placeholder sections, unused variants) still ships in the HTML, so crawlers, scrapers, and LLMs parse it, it adds page weight, and it can break document structure (a hidden rich-text block adding a second `h1`). Report those as Low, worded "hidden from view but still rendered in the HTML," with the fix "remove it from the published page, not just hide it." Functional hidden elements (modals, mobile menus, dropdowns, skip links) are working UI, not findings. If you cannot determine visibility, report the finding normally without claiming either way.
+- Element-level findings must reflect what users actually experience. Before reporting an element (a broken link, a stray heading, placeholder text), check whether it is visible on the rendered page, using the page's own HTML/CSS or the bundled headless browser: hidden wrappers (`hidden` attribute, inline `display:none`, Webflow's `w-condition-invisible`, utility classes like `.hide`) mean the issue exists in markup only. Never present a hidden element's issue at full severity, but do not silently drop it either: hidden **leftover content** (style-guide blocks, placeholder sections, unused variants) still ships in the HTML, so crawlers, scrapers, and LLMs parse it, it adds page weight, and it can break document structure (a hidden rich-text block adding a second `h1`). Report those as Low, worded "hidden from view but still rendered in the HTML," with the fix "remove it from the published page, not just hide it." Functional hidden elements (modals, mobile menus, dropdowns, skip links) are working UI, not findings. If you cannot determine visibility, report the finding normally without claiming either way.
 - Sample intelligently; say which pages were reviewed so the user knows the coverage.
+- Every Fix must be achievable on the detected platform. Never recommend server-side solutions (server-rendering, middleware, server config, custom response headers) to a Webflow site: there is no server the developer controls. On hosted platforms, fixes live in Designer settings, content, or custom code embeds. If no platform-appropriate fix exists, say that honestly instead of prescribing an impossible one.
 - When a finding needs a precise standard (a length limit, a format, a setting path), pull it from the reference file rather than approximating.

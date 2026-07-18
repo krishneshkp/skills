@@ -13,7 +13,7 @@ Run scripts/perf.js (Lighthouse) as a diagnostic, **not a gate**: don't score-po
 
 ## Checks — fonts
 
-- **[HIGH]** No fonts loaded from `fonts.googleapis.com` / `fonts.gstatic.com` — fonts must be self-hosted (WOFF2). Escalation trigger. [S] — markup-level evidence in crawl-report.json (`googleFontsInMarkup`); true network-level evidence (catches CSS `@import`/`@font-face` loads) in a11y-report.json (`googleFontsNetwork`, `fontRequests`).
+- **[HIGH]** No fonts loaded from `fonts.googleapis.com` / `fonts.gstatic.com` — fonts must be self-hosted (WOFF2). Why: Google's CDN sends every visitor's IP to Google (EU courts have already issued GDPR fines for exactly this), and the extra third-party connection is slower than serving fonts from your own domain. Escalation trigger. [S] — markup-level evidence in crawl-report.json (`googleFontsInMarkup`); true network-level evidence (catches CSS `@import`/`@font-face` loads) in a11y-report.json (`googleFontsNetwork`, `fontRequests`).
 - **[HIGH]** Hero fonts preloaded (`<link rel="preload" as="font" type="font/woff2" crossorigin>`) — only the fonts visible above the fold. [S]
 - **[LOW]** `font-display` strategy set (swap/optional) to avoid invisible-text flashes. [S]
 - **[LOW]** Preconnect to the font/CDN origin where fonts load cross-origin. [S]

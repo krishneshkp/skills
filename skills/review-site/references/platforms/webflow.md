@@ -16,7 +16,7 @@ Webflow's failure mode: **what the platform did that you need to catch** — def
 - **[HIGH]** Webflow badge removed. [S]
 - **[HIGH]** Default og:image / default favicon / default webclip not shipped. [S+J]
 - **[LOW]** Default form names ("Email Form") replaced — they leak into submissions and integrations. [S]
-- **[HIGH]** Google Fonts downloaded and uploaded to Webflow (or self-hosted) — never linked via Webflow's Google Fonts integration. Check for `fonts.googleapis.com` requests. [S]
+- **[HIGH]** Google Fonts downloaded and uploaded to Webflow (or self-hosted) — never linked via Webflow's Google Fonts integration (that link sends visitor IPs to Google, a GDPR liability with real EU fines, and is slower than serving from Webflow's own CDN). Check for `fonts.googleapis.com` requests. [S]
 
 ## CMS & sitemap
 
@@ -40,6 +40,8 @@ Webflow's failure mode: **what the platform did that you need to catch** — def
 ## What the developer can and cannot change — never flag the "cannot" column
 
 Before flagging any Webflow output, ask: **is there a Designer or site-setting that changes this?** If no, it is not a finding — platform-generated output the developer cannot edit or override gets, at most, a one-line informational note. Never assign it a severity or a fix.
+
+**No server-side control at all**: Webflow hosting exposes no server rendering, no middleware or edge functions, no server config, and no arbitrary response headers. Any fix you recommend must live in Designer settings, page/site custom code, or content. If a best-practice fix would require a server (SSR fallbacks, dynamic responses, header tweaks beyond what settings expose), either name the closest Webflow-native alternative or state that it is not achievable on Webflow.
 
 Platform-generated, NOT findings:
 - **Native Localization output** (verified against Webflow Help Center + community): hreflang tags are generated automatically per configured locale, including `x-default`, and are also injected into the auto-generated sitemap. Individual tags **cannot be edited or removed** from the Designer; the only controls are Settings → Localization: an auto-generation on/off toggle and the base-URL choice. Duplicated or repeated hreflang entries per locale are platform output, not a developer error — never a finding.
