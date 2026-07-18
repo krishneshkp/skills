@@ -114,7 +114,7 @@ Every finding carries exactly one tier. The three severity tiers rank by launch 
 - Mixed content, or API keys visible in page source
 - Lorem ipsum / placeholder text on a production page
 - Sitemap containing reference/filter CMS collection pages
-- `href="#"` links **confirmed** to do nothing when clicked (many are JS-wired buttons: verify in a browser first, never flag from markup alone)
+- `href="#"` on a nav link, footer link, CTA, or button (forgotten destination, or should be a real `<button>`); the one exception is social-share buttons, which use `href="#"` by design (verify those work rather than flagging)
 - Platform default assets shipped: default favicon, missing/default og:image, default webclip
 - Duplicated analytics/marketing tags
 
