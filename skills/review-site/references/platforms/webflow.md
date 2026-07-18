@@ -32,6 +32,7 @@ Webflow's failure mode: **what the platform did that you need to catch** — def
 ## Platform behaviors to know (verified on real published output)
 
 - Unset CMS link fields publish as hidden `href="#"` anchors with `w-condition-invisible` — expected output, not broken links (crawl.js excludes them).
+- Distinguish platform-hidden from author-hidden: `w-condition-invisible` is Webflow's own conditional-visibility output (not a finding), but an author-added `.hide` wrapper around leftover content (the classic case: a rich-text style-guide block left in a CMS template) is a Low finding — it still ships to crawlers, adds weight, and can emit duplicate headings. Fix: delete the element from the template, don't just hide it.
 - **Social-share buttons** use `href="#"` by design (Webflow's share widget wires them in JS) — treat those as [MANUAL] (confirm sharing fires), not dead links. But `href="#"` on a nav link, footer link, CTA, or normal button IS a finding: flag it (forgotten destination, or should be a `<button>`). Do not extend the social-share exception to other elements.
 - Staging (`.webflow.io`) noindex is served via robots.txt / X-Robots-Tag, **not** a meta tag — the absence of `<meta name="robots">` on staging pages is normal.
 - Icon links are emitted `href`-before-`rel`; sitemap.xml often 404s on the staging subdomain even when auto-generation is on for the production domain.
