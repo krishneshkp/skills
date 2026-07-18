@@ -32,6 +32,7 @@ Webflow's failure mode: **what the platform did that you need to catch** — def
 ## Platform behaviors to know (verified on real published output)
 
 - Unset CMS link fields publish as hidden `href="#"` anchors with `w-condition-invisible` — expected output, not broken links (crawl.js excludes them).
+- `href="#"` is Webflow's default for JS-wired interactive elements: social-share buttons, CTAs that open a modal or form, language switchers, and nav dropdowns. These are **not** dead links. Treat them as [MANUAL] (click each in a browser to confirm it fires); never report them as broken links from the static markup.
 - Staging (`.webflow.io`) noindex is served via robots.txt / X-Robots-Tag, **not** a meta tag — the absence of `<meta name="robots">` on staging pages is normal.
 - Icon links are emitted `href`-before-`rel`; sitemap.xml often 404s on the staging subdomain even when auto-generation is on for the production domain.
 
@@ -53,3 +54,4 @@ Developer CAN change (fair game for findings): per-page titles/meta/OG, canonica
 - **[MANUAL]** Unused interactions cleaned via Interactions panel.
 - **[MANUAL]** Webflow Audit panel clear (missing alt text, headings, aria).
 - **[MANUAL]** Form notification email set and test submission received.
+- **[MANUAL]** Interactive `href="#"` elements (social-share buttons, CTA/modal triggers, language switcher, dropdowns) actually fire when clicked.
