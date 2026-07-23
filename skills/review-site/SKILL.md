@@ -140,20 +140,42 @@ A senior reviewer never implies they eyeballed every page. State exactly what th
 
 > Scope: 3 requested pages (pages scope). Site-level probes ran but are outside the requested scope.
 
-### Part 1: Findings table (required)
+### Part 1: Findings (required)
 
-One row per issue, and one issue per row. Never bundle distinct defects into a single row, even when they share a page. An ARIA violation and a broken heading order on the same form page are two rows, each with its own severity and its own fix. Cite exact locations.
+One entry per issue, and one issue per entry. Never bundle distinct defects into a single entry, even when they share a page. An ARIA violation and a broken heading order on the same form page are two entries, each with its own severity and its own fix. Cite exact locations.
+
+**Number every finding.** Findings run 1, 2, 3 and up, in one continuous sequence, ordered highest severity first (all Critical, then all High, then all Low). The number lets the user point at a specific issue ("fix number 3") without re-quoting it, so keep the numbers stable within a report.
 
 Write every finding in plain language a non-technical client understands. Lead with what breaks for whom, not the tool's rule name. Tool identifiers (axe rule ids, impact levels, Lighthouse audit ids) belong in parentheses as evidence, never as the finding itself.
 
 Not: "Footer `<li>` items not contained in a `<ul>`/`<ol>` (axe serious)."
 Instead: "The footer link list is broken for screen-reader users: its list items sit outside a list container (axe: listitem, serious)."
 
-| Finding | Where | Severity | Fix |
-|---|---|---|---|
-| Canonical points to `site.webflow.io` | all pages | Critical | Set canonical base to production domain in site settings |
-| Google Fonts loaded via CDN | global | High | Download WOFF2, self-host / upload to Webflow |
-| Nav links not in `<ul>`/`<li>` | header | Low | Wrap nav items in a semantic list |
+Use whichever layout reads better for the medium:
+
+**Numbered list** (best for terminals, or when fixes run long):
+
+```
+1. [Critical] Canonical points to site.webflow.io
+   Where: all pages
+   Fix: Set the canonical base to the production domain in site settings.
+
+2. [High] Blog posts ship no social preview image
+   Where: /blog/* (sampled 2 posts, both missing og:image)
+   Fix: Add an OG image field to the blog CMS template with a branded fallback.
+
+3. [Low] Nav links are not in a semantic list
+   Where: header
+   Fix: Wrap the nav items in a <ul>/<li>.
+```
+
+**Table** (best when findings are short and the renderer shows tables well). Keep the leading number:
+
+| # | Finding | Where | Severity | Fix |
+|---|---|---|---|---|
+| 1 | Canonical points to `site.webflow.io` | all pages | Critical | Set canonical base to the production domain in site settings |
+| 2 | Blog posts ship no social preview image | `/blog/*` | High | Add an OG image field to the blog CMS template |
+| 3 | Nav links not in a semantic list | header | Low | Wrap nav items in a `<ul>`/`<li>` |
 
 ### Part 2: Verdict (required)
 
@@ -169,7 +191,7 @@ Production (live-site) review, the same bar applied to a shipped site:
 - **Does not meet the launch bar: N Critical issue(s)** when any Critical finding stands.
 - **Meets the launch bar** when there are no Critical findings. List High-priority items with suggested owners.
 
-One line of rationale under the decision.
+One line of rationale under the decision. When it helps, reference findings by their number (for example "blocked on findings 1 and 2").
 
 Scoped runs (section or pages): the decision line carries the scope. For example `Launch: Blocked (scope: /blog/ section)` on staging, `Does not meet the launch bar (scope: /blog/ section): 1 Critical issue` on a live site, or `Reviewed: 3 pages, no Critical findings in the reviewed set`. Site-level issues found outside the requested scope (in `crawl-report.json` under `siteLevelProbes`, marked `outsideRequestedScope: true`) are never hidden and never silently flip a scoped verdict. Report them under an "Outside requested scope: flag to site owner" heading, and make both facts unmistakable: the scoped verdict stands on the scoped findings, and there is (or is not) a separate site-wide blocker the owner should act on.
 
